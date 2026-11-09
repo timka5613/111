@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аттестация УСБ УВД по ЦАО | RMRP</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    color: #e6edf3; min-height: 100vh; padding: 20px 20px 100px 20px;
+  }
+  header {
+    text-align: center; padding: 24px 20px;
+    background: linear-gradient(90deg, #1f2937, #111827, #1f2937);
+    border-radius: 12px; margin-bottom: 20px;
+    border: 1px solid #30363d; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  header h1 { color: #58a6ff; font-size: 24px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  header p { color: #8b949e; font-size: 13px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+    padding: 26px; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .card h2 { color: #f0f6fc; margin-bottom: 18px; font-size: 19px; border-bottom: 2px solid #21262d; padding-bottom: 10px; }
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; color: #8b949e; margin-bottom: 6px; font-size: 13px; font-weight: 600; }
+  .form-group input, .form-group textarea {
+    width: 100%; background: #0d1117; border: 1px solid #30363d; border-radius: 8px;
+    padding: 11px 13px; color: #e6edf3; font-size: 14px; font-family: inherit;
+  }
+  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88,166,255,0.15); }
+  .form-group textarea { min-height: 90px; resize: vertical; }
+  .btn {
+    background: linear-gradient(145deg, #238636, #1a6e2b); color: #fff;
+    border: none; border-radius: 8px; padding: 12px 22px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    margin-right: 8px; margin-top: 8px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(35,134,54,0.4); }
+  .btn-secondary { background: linear-gradient(145deg, #30363d, #21262d); }
+  .btn-danger { background: linear-gradient(145deg, #da3633, #a82624); }
+  .btn-warn { background: linear-gradient(145deg, #d29922, #b07d15); color: #0d1117; }
+  .fabulablock {
+    background: #0d1117; border: 1px solid #21262d; border-left: 4px solid #f85149;
+    border-radius: 8px; padding: 18px; margin-bottom: 18px;
+  }
+  .fabulablock .tag { color: #f85149; font-weight: 700; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+  .fabulablock .text { color: #f0f6fc; font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+  .fabulablock textarea { width: 100%; background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 11px 13px; color: #e6edf3; font-size: 13px; font-family: inherit; min-height: 110px; resize: vertical; }
+  .fabulablock textarea:focus { outline: none; border-color: #58a6ff; }
+  .qblock {
+    background: #0d1117; border: 1px solid #21262d; border-left: 4px solid #58a6ff;
+    border-radius: 8px; padding: 16px; margin-bottom: 14px;
+  }
+  .qblock .qnum { color: #58a6ff; font-weight: 700; font-size: 12px; margin-bottom: 6px; text-transform: uppercase; }
+  .qblock .qtext { color: #f0f6fc; font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
+  .qblock label.opt {
+    display: block; padding: 9px 12px; margin-bottom: 6px; border-radius: 6px;
+    cursor: pointer; font-size: 13px; color: #c9d1d9; border: 1px solid #21262d;
+    transition: all 0.15s;
+  }
+  .qblock label.opt:hover { background: #161b22; border-color: #30363d; }
+  .qblock label.opt input { margin-right: 8px; }
+  .qblock label.opt.selected { background: rgba(88,166,255,0.1); border-color: #58a6ff; }
+  .bottombar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(90deg, #0d1117, #161b22, #0d1117);
+    border-top: 2px solid #30363d; padding: 12px 20px;
+    display: flex; justify-content: space-between; align-items: center; gap: 15px;
+    flex-wrap: wrap; z-index: 100; box-shadow: 0 -4px 16px rgba(0,0,0,0.5);
+  }
+  .bottombar .stat { color: #8b949e; font-size: 13px; }
+  .bottombar .stat b { color: #e6edf3; }
+  .timer { font-size: 20px; font-weight: 700; color: #7ee787; letter-spacing: 1px; font-family: monospace; }
+  .timer.warn { color: #d29922; }
+  .timer.danger { color: #f85149; }
+  .progress { flex: 1; min-width: 200px; height: 8px; background: #21262d; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #58a6ff, #7ee787); transition: width 0.3s; }
+  .result-item { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+  .result-item.pass { border-left: 4px solid #3fb950; }
+  .result-item.fail { border-left: 4px solid #f85149; }
+  .result-item .title { color: #f0f6fc; font-weight: 600; font-size: 13px; margin-bottom: 6px; display: flex; justify-content: space-between; gap: 10px; }
+  .result-item .verdict { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; white-space: nowrap; }
+  .verdict.pass { background: rgba(63,185,80,0.15); color: #3fb950; }
+  .verdict.fail { background: rgba(248,81,73,0.15); color: #f85149; }
+  .result-item .answer { color: #8b949e; font-size: 12px; padding: 8px; background: #161b22; border-radius: 6px; margin-top: 6px; }
+  .result-item .meta { color: #58a6ff; font-size: 11px; margin-top: 6px; }
+  .overall { padding: 20px; border-radius: 10px; text-align: center; font-size: 22px; font-weight: 700; margin: 20px 0; letter-spacing: 1px; }
+  .overall.pass { background: rgba(63,185,80,0.15); border: 2px solid #3fb950; color: #3fb950; }
+  .overall.fail { background: rgba(248,81,73,0.15); border: 2px solid #f85149; color: #f85149; }
+  .overall small { display: block; font-size: 14px; font-weight: 400; margin-top: 8px; opacity: 0.85; }
+  .info-bar { color: #8b949e; font-size: 13px; margin-bottom: 16px; padding: 12px; background: #0d1117; border-radius: 8px; border-left: 3px solid #58a6ff; line-height: 1.6; }
+  .info-bar b { color: #e6edf3; }
+  .admin-item { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+  .admin-item h4 { color: #58a6ff; margin-bottom: 8px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .admin-item .meta { color: #8b949e; font-size: 12px; margin-bottom: 8px; line-height: 1.6; }
+  .admin-item details { margin-top: 8px; }
+  .admin-item summary { cursor: pointer; color: #58a6ff; font-size: 12px; }
+  .admin-item .fab { padding: 10px; background: #161b22; border-radius: 6px; margin-top: 8px; font-size: 12px; }
+  .admin-item .fab .head { color: #f85149; font-weight: 600; margin-bottom: 4px; }
+  .admin-item .fab .body { color: #c9d1d9; line-height: 1.5; }
+  .admin-item .fab .score { color: #58a6ff; margin-top: 6px; font-weight: 600; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab { padding: 10px 18px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; cursor: pointer; color: #8b949e; font-size: 13px; font-weight: 600; }
+  .tab.active { background: #1f2937; color: #58a6ff; border-color: #58a6ff; }
+  .hidden { display: none !important; }
+  .warn-msg { color: #d29922; font-size: 13px; margin-top: 12px; padding: 10px; background: rgba(210,153,34,0.1); border-radius: 6px; }
+  .footer { text-align: center; color: #484f58; font-size: 11px; padding: 20px; }
+  .admin-login-form { margin-top: 12px; padding: 14px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; }
+  .admin-login-form input { width: 100%; max-width: 300px; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 10px 12px; color: #e6edf3; font-size: 14px; margin-bottom: 8px; }
+  .init-badge { position: fixed; bottom: 4px; right: 6px; font-size: 10px; color: #484f58; z-index: 999; font-family: monospace; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>УСБ УВД по ЦАО</h1>
+    <p>Аттестация стажёра · 20 минут · 3 фабулы + 10 тестов · RMRP</p>
+  </header>
+
+  <!-- HOME -->
+  <div id="screen-home">
+    <div class="card">
+      <h2>Вход в систему</h2>
+      <div class="info-bar">
+        <b>Порядок прохождения:</b> введите код доступа → заполните ФИО → приступите к тесту.<br>
+        <b>Время:</b> 20 минут на 3 юридические фабулы и 10 тестовых вопросов.<br>
+        <b>Оценка фабул:</b> нейро-модуль анализирует ответ по ключевым формулировкам законов РМРП (макс. 10 баллов за фабулу).<br>
+        <b>Проходной балл:</b> 25 из 40.
+      </div>
+      <div class="form-group">
+        <label>🎟 Код доступа *</label>
+        <input id="access-code" placeholder="USB-XXXXXX">
+      </div>
+      <div class="form-group">
+        <label>👤 ФИО проходящего *</label>
+        <input id="user-name" placeholder="Иванов Иван Иванович">
+      </div>
+      <div class="form-group">
+        <label>📋 Кто проводит проверку *</label>
+        <input id="inspector" placeholder="Петров П.П., ст. лейтенант полиции УСБ">
+      </div>
+      <button class="btn" onclick="startTest()">▶ Начать аттестацию</button>
+      <button class="btn btn-secondary" onclick="showAdminLogin()">🔐 Панель администратора</button>
+      <div class="warn-msg hidden" id="home-warn"></div>
+      <div class="admin-login-form hidden" id="admin-login-form">
+        <label style="display:block;color:#8b949e;font-size:13px;margin-bottom:8px">Введите пароль администратора:</label>
+        <input id="admin-pwd" type="password" placeholder="Пароль">
+        <div>
+          <button class="btn" onclick="checkAdminPassword()">Войти</button>
+          <button class="btn btn-secondary" onclick="hideAdminLogin()">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST -->
+  <div id="screen-test" class="hidden">
+    <div class="card">
+      <h2>Часть I. Юридические фабулы</h2>
+      <div class="info-bar">Опишите алгоритм действий, статьи законов, процессуальные действия. Ответ должен быть развёрнутым — нейро-модуль учитывает юридические формулировки.</div>
+      <div id="fabulas-container"></div>
+    </div>
+    <div class="card">
+      <h2>Часть II. Тестовые вопросы</h2>
+      <div class="info-bar">10 вопросов с вариантами ответов. 1 правильный ответ = 1 балл.</div>
+      <div id="questions-container"></div>
+      <button class="btn btn-warn" onclick="submitTest()">✔ Завершить аттестацию</button>
+      <button class="btn btn-secondary" onclick="confirmExit()">← Отмена</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="screen-results" class="hidden">
+    <div class="card">
+      <h2>Результаты аттестации</h2>
+      <div id="results-content"></div>
+      <button class="btn btn-secondary" onclick="backHome()" style="margin-top:16px">← На главную</button>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="screen-admin" class="hidden">
+    <div class="card">
+      <h2>🔐 Панель администратора</h2>
+      <div class="tabs">
+        <div class="tab active" id="tab-subs" onclick="switchTab('subs')">📊 Прохождения</div>
+        <div class="tab" id="tab-codes" onclick="switchTab('codes')">🎟 Коды доступа</div>
+      </div>
+      <div id="admin-subs"></div>
+      <div id="admin-codes" class="hidden"></div>
+      <button class="btn btn-secondary" onclick="backHome()" style="margin-top:16px">← На главную</button>
+      <button class="btn btn-danger" onclick="clearAll()" style="margin-top:16px">🗑 Очистить все записи</button>
+    </div>
+  </div>
+
+  <div class="footer">УСБ УВД по ЦАО · RMRP · Данные хранятся локально</div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottombar hidden" id="bottombar">
+  <div class="timer" id="timer">20:00</div>
+  <div class="progress"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="stat">Фабулы: <b id="stat-fab">0/3</b></div>
+  <div class="stat">Вопросы: <b id="stat-q">0/10</b></div>
+</div>
+
+<div class="init-badge" id="init-badge">JS: loading...</div>
+
+<script>
+/* =========================================================
+   КОНФИГ
+   ========================================================= */
+var ADMIN_PASSWORD = "USB-ADMIN-2024";
+var ACCESS_CODES = [
+  "USB-A1B2C3","USB-D4E5F6","USB-G7H8I9","USB-J0K1L2","USB-M3N4O5",
+  "USB-P6Q7R8","USB-S9T0U1","USB-V2W3X4","USB-Y5Z6A7","USB-B8C9D0"
+];
+var STORAGE_KEY = "usb_exam_v3";
+var CODES_KEY = "usb_codes_used_v3";
+var TIME_LIMIT = 20 * 60;
+var PASS_SCORE = 25;
+
+/* =========================================================
+   SAFE STORAGE (с fallback в память)
+   ========================================================= */
+var memStore = {};
+var Storage = {
+  get: function(key) {
+    try { return localStorage.getItem(key); }
+    catch (e) { return memStore[key] || null; }
+  },
+  set: function(key, val) {
+    try { localStorage.setItem(key, val); }
+    catch (e) { memStore[key] = val; }
+  },
+  remove: function(key) {
+    try { localStorage.removeItem(key); }
+    catch (e) { delete memStore[key]; }
+  }
+};
+
+/* =========================================================
+   ФАБУЛЫ
+   ========================================================= */
+var FABULAS = [
+  {
+    title: "Фабула № 1 — Взятка (ст. 79 УК РФ)",
+    text: "В ходе проведения оперативно-розыскного мероприятия сотрудник УСБ УВД по ЦАО зафиксировал факт получения денежных средств в размере 50 000 рублей сотрудником отдела уголовного розыска УВД по ЦАО от гражданина за непривлечение последнего к административной ответственности. Опишите алгоритм действий сотрудника УСБ: правовую квалификацию, процессуальные действия, взаимодействие с иными органами и порядок документирования.",
+    keywords: [
+      "ст. 79 УК","получение взятки","дача взятки","задержание","ст. 10 ПК","ст. 12 ПК",
+      "ФСБ","СК России","следственный комитет","прокуратура","уведомление","руководство",
+      "передача","видеофиксация","рапорт","оперативно-розыскная деятельность","ОРМ",
+      "задержание с поличным","документирование","протокол","личный обыск","постановление",
+      "уведомление прокурора","передача в СК","первая служба","коррупция","должностное лицо"
+    ]
+  },
+  {
+    title: "Фабула № 2 — Конфликт интересов (ст. 10 ФЗ № 54-ФЗ)",
+    text: "Сотрудник УВД по ЦАО, являясь государственным служащим, одновременно владеет 30% доли в уставном капитале частного охранного предприятия, которое оказывает охранные услуги объекту, подведомственному УВД по ЦАО. Оцените правовую ситуацию и опишите действия сотрудника УСБ по выявлению и пресечению нарушения: квалификацию, меры реагирования, порядок оформления.",
+    keywords: [
+      "ст. 10 ФЗ 54-ФЗ","ст. 5 ФЗ 2-ФЗ","конфликт интересов","личная заинтересованность",
+      "уведомление","комиссия","урегулирование","увольнение","утрата доверия","ст. 9 ФЗ 88-ФЗ",
+      "предпринимательская деятельность","ст. 76 УК","ст. 77 УК","антикоррупционная проверка",
+      "отстранение","ст. 15 ТК РФ","рапорт","проверка","документирование","приказ",
+      "государственный служащий","запрет","ограничение","служебная проверка","прокуратура"
+    ]
+  },
+  {
+    title: "Фабула № 3 — Неисполнение требований прокурора (ст. 88-2 УК РФ)",
+    text: "Прикомандированный сотрудник Пятой службы ФСБ России, осуществляющий деятельность в УВД по ЦАО, выявил факт систематического неисполнения законных требований прокурора сотрудником отдела кадров УВД. Опишите правовую квалификацию и процессуальный порядок действий прикомандированного сотрудника: квалификация, взаимодействие с иными органами, порядок документирования и передачи материалов.",
+    keywords: [
+      "ст. 88-2 УК","ст. 88-1 УК","неисполнение требований прокурора","рапорт",
+      "первая служба","ст. 31 ФЗ 78-ФЗ","ст. 30 ФЗ 78-ФЗ","СК России","прокуратура",
+      "проверка","документирование","отстранение","ст. 15 ТК РФ","передача материалов",
+      "прикомандированный","ФСБ","Пятая служба","неисполнение представления",
+      "протест прокурора","ст. 17 ФЗ 14-ФЗ","ст. 18 ФЗ 14-ФЗ","уведомление","постановление"
+    ]
+  }
+];
+
+/* =========================================================
+   10 ТЕСТОВЫХ ВОПРОСОВ
+   ========================================================= */
+var QUIZ = [
+  {
+    q: "Какое из перечисленных полномочий закреплено за сотрудниками подразделений собственной безопасности в соответствии с п. 19 ч. 1 ст. 11 Федерального закона «О полиции»?",
+    options: [
+      "Право беспрепятственно входить в жилые помещения граждан без судебного решения",
+      "Право использовать форму одежды и транспортные средства без знаков принадлежности к МВД в целях наблюдения и проведения специальных операций",
+      "Право самостоятельно аннулировать лицензии на оружие без согласования с Росгвардией",
+      "Право применять огнестрельное оружие без предупреждения в отношении любых граждан"
+    ],
+    correct: 1
+  },
+  {
+    q: "В соответствии со ст. 15 Трудового кодекса РФ отстранение работника от работы допускается на срок, не превышающий:",
+    options: ["24 часа", "48 часов", "72 часа", "7 суток"],
+    correct: 2
+  },
+  {
+    q: "Порядок задержания сотрудника государственной организации, установленный ч. 3 ст. 10 Процессуального кодекса РФ, предусматривает:",
+    options: [
+      "Немедленную передачу задержанного в ФСБ без уведомления руководства",
+      "Вызов сотрудника СК России, прокурора и представителя руководства с ожиданием ответа 5 минут и прибытия 10 минут",
+      "Уведомление Губернатора Федерального округа в течение 24 часов",
+      "Проведение обыска без составления протокола"
+    ],
+    correct: 1
+  },
+  {
+    q: "Какое преступление предусмотрено ст. 76 УК РФ?",
+    options: [
+      "Превышение должностных полномочий",
+      "Злоупотребление должностными полномочиями",
+      "Получение взятки",
+      "Халатность"
+    ],
+    correct: 1
+  },
+  {
+    q: "Согласно ст. 11 Федерального закона «О государственной службе» № 54-ФЗ, регулирование правоотношений, связанных со службой в органах внутренних дел, осуществляется в том числе:",
+    options: [
+      "Только Конституцией РФ",
+      "Только ведомственными приказами МВД",
+      "Трудовым кодексом РФ, ФЗ «О полиции», ФЗ № 54-ФЗ и иными нормативными актами",
+      "Нормами международного права"
+    ],
+    correct: 2
+  },
+  {
+    q: "В соответствии со ст. 12 ФЗ № 54-ФЗ сотрудник органов внутренних дел при выполнении служебных обязанностей подчиняется:",
+    options: [
+      "Только Президенту РФ",
+      "Только своему непосредственному начальнику",
+      "Прямым руководителям (начальникам), министру внутренних дел и его заместителям, Председателю Правительства и его заместителям",
+      "Только Губернатору Федерального округа"
+    ],
+    correct: 2
+  },
+  {
+    q: "Понятие «конфликт интересов» на государственной службе определяется как:",
+    options: [
+      "Разногласия между сотрудниками одного подразделения",
+      "Ситуация, при которой личная заинтересованность влияет или может повлиять на надлежащее исполнение должностных обязанностей",
+      "Спор между ведомствами по вопросам компетенции",
+      "Разногласия в толковании норм законодательства"
+    ],
+    correct: 1
+  },
+  {
+    q: "Прикомандированные сотрудники Пятой службы ФСБ России в соответствии со ст. 30 ФЗ № 78-ФЗ:",
+    options: [
+      "Не могут занимать должности в государственной организации",
+      "Могут занимать должность заместителя начальника отдела организации",
+      "Могут занимать должность руководителя организации",
+      "Не подчиняются руководству организации, к которой прикомандированы"
+    ],
+    correct: 1
+  },
+  {
+    q: "В соответствии со ст. 16-1 Трудового кодекса РФ запрет на работу в государственных организациях накладывается путем:",
+    options: [
+      "Устного распоряжения руководителя организации",
+      "Внесения гражданина в реестр лиц, уволенных по отрицательным мотивам",
+      "Размещения информации в средствах массовой информации",
+      "Уведомления прокуратуры без внесения в реестр"
+    ],
+    correct: 1
+  },
+  {
+    q: "Увольнение в связи с утратой доверия в соответствии со ст. 38-1 ФЗ «О прокуратуре» и ст. 9 ФЗ «О Следственном комитете» применяется в случае:",
+    options: [
+      "Однократного опоздания на службу",
+      "Непринятия мер по предотвращению и (или) урегулированию конфликта интересов",
+      "Отказа от выполнения сверхурочной работы",
+      "Выхода в отпуск без уведомления руководителя"
+    ],
+    correct: 1
+  }
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+var currentCode = null;
+var currentUser = null;
+var currentInspector = null;
+var timeLeft = TIME_LIMIT;
+var timerInterval = null;
+
+/* =========================================================
+   УТИЛИТЫ
+   ========================================================= */
+function el(id) { return document.getElementById(id); }
+
+function getValue(id) {
+  var e = el(id);
+  return e ? (e.value || "") : "";
+}
+
+function esc(s) {
+  if (s === null || s === undefined) return "";
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function formatTime(sec) {
+  var m = Math.floor(sec / 60);
+  var s = sec % 60;
+  return m + " мин " + s + " сек";
+}
+
+function pad2(n) {
+  return n < 10 ? "0" + n : "" + n;
+}
+
+/* =========================================================
+   БЕЗОПАСНОЕ ХРАНИЛИЩЕ
+   ========================================================= */
+function getSubmissions() {
+  try { return JSON.parse(Storage.get(STORAGE_KEY) || "[]"); }
+  catch (e) { return []; }
+}
+function saveSubmission(sub) {
+  try {
+    var arr = getSubmissions();
+    arr.push(sub);
+    Storage.set(STORAGE_KEY, JSON.stringify(arr));
+  } catch (e) { console.warn("saveSubmission failed:", e); }
+}
+function getUsedCodes() {
+  try { return JSON.parse(Storage.get(CODES_KEY) || "[]"); }
+  catch (e) { return []; }
+}
+function markCodeUsed(code) {
+  try {
+    var arr = getUsedCodes();
+    if (arr.indexOf(code) === -1) {
+      arr.push(code);
+      Storage.set(CODES_KEY, JSON.stringify(arr));
+    }
+  } catch (e) { console.warn("markCodeUsed failed:", e); }
+}
+
+/* =========================================================
+   ADMIN LOGIN
+   ========================================================= */
+function showAdminLogin() {
+  el("admin-login-form").classList.remove("hidden");
+  el("admin-pwd").value = "";
+  el("admin-pwd").focus();
+}
+function hideAdminLogin() {
+  el("admin-login-form").classList.add("hidden");
+}
+function checkAdminPassword() {
+  var pwd = getValue("admin-pwd");
+  if (pwd !== ADMIN_PASSWORD) {
+    alert("❌ Неверный пароль");
+    return;
+  }
+  hideAdminLogin();
+  openAdmin();
+}
+function openAdmin() {
+  el("screen-home").classList.add("hidden");
+  el("screen-test").classList.add("hidden");
+  el("screen-results").classList.add("hidden");
+  el("screen-admin").classList.remove("hidden");
+  el("bottombar").classList.add("hidden");
+  switchTab("subs");
+}
+function switchTab(tab) {
+  var subsEl = el("tab-subs"), codesEl = el("tab-codes");
+  if (tab === "subs") {
+    subsEl.classList.add("active"); codesEl.classList.remove("active");
+    el("admin-subs").classList.remove("hidden");
+    el("admin-codes").classList.add("hidden");
+    renderSubsAdmin();
+  } else {
+    subsEl.classList.remove("active"); codesEl.classList.add("active");
+    el("admin-subs").classList.add("hidden");
+    el("admin-codes").classList.remove("hidden");
+    renderCodesAdmin();
+  }
+}
+function renderSubsAdmin() {
+  var cont = el("admin-subs");
+  var subs = getSubmissions().slice().reverse();
+  if (subs.length === 0) {
+    cont.innerHTML = '<div class="info-bar">Пока нет ни одной записи прохождения.</div>';
+    return;
+  }
+  var html = '<div class="info-bar">Всего прохождений: <b>' + subs.length + '</b></div>';
+  for (var i = 0; i < subs.length; i++) {
+    var s = subs[i];
+    var cls = s.passed ? "pass" : "fail";
+    html += '<div class="admin-item">';
+    html += '<h4><span>' + esc(s.user) + '</span>';
+    html += '<span class="verdict ' + cls + '">' + (s.passed ? "ДОПУЩЕН" : "НЕ ДОПУЩЕН") + ' · ' + s.totalScore + '/40</span></h4>';
+    html += '<div class="meta">';
+    html += 'Код: <b>' + esc(s.code) + '</b> · Проверяющий: <b>' + esc(s.inspector) + '</b><br>';
+    html += 'Дата: ' + esc(s.date) + ' · Время: ' + s.timeSpentStr + (s.autoSubmitted ? ' · <b style="color:#d29922">авто</b>' : '') + '<br>';
+    html += 'Фабулы: <b>' + s.fabScore + '/30</b> · Тест: <b>' + s.quizScore + '/10</b>';
+    html += '</div>';
+    html += '<details><summary>📄 Ответы на фабулы (' + s.fabulas.length + ')</summary>';
+    for (var j = 0; j < s.fabulas.length; j++) {
+      var f = s.fabulas[j];
+      html += '<div class="fab"><div class="head">' + esc(f.title) + '</div>';
+      html += '<div class="body">' + (esc(f.answer) || '<i>нет ответа</i>') + '</div>';
+      html += '<div class="score">Оценка нейро-модуля: ' + f.score + '/10 (совпало ' + f.matched + ' ключей)</div></div>';
+    }
+    html += '</details>';
+    html += '<details><summary>📋 Ответы на тест (' + s.quiz.length + ')</summary>';
+    for (var k = 0; k < s.quiz.length; k++) {
+      var a = s.quiz[k];
+      var color = a.correct ? '#3fb950' : '#f85149';
+      html += '<div class="fab"><div class="head" style="color:' + color + '">' + (a.correct ? "✓" : "✗") + ' Вопрос ' + (k+1) + ': ' + esc(a.question) + '</div>';
+      html += '<div class="body"><b>Ответ:</b> ' + esc(a.selectedText);
+      if (!a.correct) html += '<br><b style="color:#3fb950">Правильно:</b> ' + esc(a.correctText);
+      html += '</div></div>';
+    }
+    html += '</details>';
+    html += '</div>';
+  }
+  cont.innerHTML = html;
+}
+function renderCodesAdmin() {
+  var cont = el("admin-codes");
+  var used = getUsedCodes();
+  var html = '<div class="info-bar">Всего кодов: <b>' + ACCESS_CODES.length + '</b> · Использовано: <b>' + used.length + '</b> · Свободно: <b>' + (ACCESS_CODES.length - used.length) + '</b></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">';
+  for (var i = 0; i < ACCESS_CODES.length; i++) {
+    var code = ACCESS_CODES[i];
+    var isUsed = used.indexOf(code) !== -1;
+    var color = isUsed ? '#f85149' : '#3fb950';
+    var deco = isUsed ? 'text-decoration:line-through;' : '';
+    html += '<div class="admin-item" style="margin-bottom:0">';
+    html += '<div style="font-family:monospace;font-size:15px;font-weight:700;color:' + color + ';' + deco + '">' + esc(code) + '</div>';
+    html += '<div style="font-size:12px;color:#8b949e;margin-top:6px">' + (isUsed ? "🔴 Использован" : "🟢 Свободен") + '</div>';
+    html += '</div>';
+  }
+  html += '</div>';
+  cont.innerHTML = html;
+}
+function clearAll() {
+  if (!confirm("Удалить ВСЕ записи прохождений? Коды останутся использованными.")) return;
+  Storage.remove(STORAGE_KEY);
+  renderSubsAdmin();
+}
+
+/* =========================================================
+   START TEST
+   ========================================================= */
+function startTest() {
+  try {
+    var code = getValue("access-code").trim().toUpperCase();
+    var name = getValue("user-name").trim();
+    var inspector = getValue("inspector").trim();
+    var warn = el("home-warn");
+
+    if (!code || !name || !inspector) {
+      warn.classList.remove("hidden");
+      warn.textContent = "⚠ Заполните все поля: код доступа, ФИО проходящего и ФИО проверяющего.";
+      return;
+    }
+    if (ACCESS_CODES.indexOf(code) === -1) {
+      warn.classList.remove("hidden");
+      warn.textContent = "❌ Неверный код доступа. Проверьте код и попробуйте снова.";
+      return;
+    }
+    var used = getUsedCodes();
+    if (used.indexOf(code) !== -1) {
+      warn.classList.remove("hidden");
+      warn.textContent = "❌ Этот код уже был использован. Обратитесь к администратору.";
+      return;
+    }
+
+    warn.classList.add("hidden");
+    currentCode = code;
+    currentUser = name;
+    currentInspector = inspector;
+    timeLeft = TIME_LIMIT;
+
+    markCodeUsed(code);
+
+    el("screen-home").classList.add("hidden");
+    el("screen-test").classList.remove("hidden");
+    el("bottombar").classList.remove("hidden");
+
+    renderFabulas();
+    renderQuiz();
+    updateProgress();
+    startTimer();
+  } catch (e) {
+    alert("Ошибка запуска теста: " + e.message);
+    console.error(e);
+  }
+}
+
+function renderFabulas() {
+  var cont = el("fabulas-container");
+  var html = "";
+  for (var i = 0; i < FABULAS.length; i++) {
+    var f = FABULAS[i];
+    html += '<div class="fabulablock">';
+    html += '<div class="tag">' + esc(f.title) + '</div>';
+    html += '<div class="text">' + esc(f.text) + '</div>';
+    html += '<textarea id="fab-' + i + '" placeholder="Введите развёрнутый ответ: правовая квалификация, статьи, алгоритм действий..." oninput="updateProgress()"></textarea>';
+    html += '</div>';
+  }
+  cont.innerHTML = html;
+}
+
+function renderQuiz() {
+  var cont = el("questions-container");
+  var html = "";
+  var letters = ["а","б","в","г"];
+  for (var i = 0; i < QUIZ.length; i++) {
+    var q = QUIZ[i];
+    html += '<div class="qblock" id="q-' + i + '">';
+    html += '<div class="qnum">Вопрос ' + (i+1) + ' из ' + QUIZ.length + '</div>';
+    html += '<div class="qtext">' + esc(q.q) + '</div>';
+    for (var j = 0; j < q.options.length; j++) {
+      html += '<label class="opt" id="opt-' + i + '-' + j + '">';
+      html += '<input type="radio" name="q' + i + '" value="' + j + '" onchange="selectOption(' + i + ',' + j + ')">';
+      html += '<b>' + letters[j] + ')</b> ' + esc(q.options[j]);
+      html += '</label>';
+    }
+    html += '</div>';
+  }
+  cont.innerHTML = html;
+}
+
+function selectOption(qi, oi) {
+  var opts = document.getElementsByName("q" + qi);
+  for (var j = 0; j < opts.length; j++) {
+    var lab = el("opt-" + qi + "-" + j);
+    if (lab) lab.classList.remove("selected");
+  }
+  var sel = el("opt-" + qi + "-" + oi);
+  if (sel) sel.classList.add("selected");
+  updateProgress();
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+function updateProgress() {
+  var fabFilled = 0;
+  for (var i = 0; i < FABULAS.length; i++) {
+    var v = getValue("fab-" + i).trim();
+    if (v.length >= 20) fabFilled++;
+  }
+  var qAnswered = 0;
+  for (var k = 0; k < QUIZ.length; k++) {
+    var opts = document.getElementsByName("q" + k);
+    for (var m = 0; m < opts.length; m++) {
+      if (opts[m].checked) { qAnswered++; break; }
+    }
+  }
+  el("stat-fab").textContent = fabFilled + "/" + FABULAS.length;
+  el("stat-q").textContent = qAnswered + "/" + QUIZ.length;
+  var total = FABULAS.length + QUIZ.length;
+  var done = fabFilled + qAnswered;
+  el("prog-fill").style.width = Math.round(done / total * 100) + "%";
+}
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(function() {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      stopTimer();
+      alert("⏰ Время истекло. Тест будет отправлен автоматически.");
+      submitTest(true);
+    }
+  }, 1000);
+}
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+function updateTimerDisplay() {
+  var t = el("timer");
+  var m = Math.floor(timeLeft / 60);
+  var s = timeLeft % 60;
+  t.textContent = pad2(m) + ":" + pad2(s);
+  t.classList.remove("warn","danger");
+  if (timeLeft <= 60) t.classList.add("danger");
+  else if (timeLeft <= 300) t.classList.add("warn");
+}
+
+/* =========================================================
+   EVALUATE FABULA
+   ========================================================= */
+function evaluateFabula(answer, keywords) {
+  if (!answer || answer.length < 20) return { score: 0, matched: 0 };
+  var norm = " " + answer.toLowerCase().replace(/[.,!?;:()"'«»]/g, " ").replace(/\s+/g, " ") + " ";
+  var matched = 0;
+  for (var i = 0; i < keywords.length; i++) {
+    if (norm.indexOf(keywords[i].toLowerCase()) !== -1) matched++;
+  }
+  return { score: Math.min(10, matched), matched: matched };
+}
+
+/* =========================================================
+   SUBMIT
+   ========================================================= */
+function submitTest(auto) {
+  if (auto !== true) {
+    if (!confirm("Завершить аттестацию и сохранить результаты? После завершения изменить ответы будет нельзя.")) return;
+  }
+  stopTimer();
+
+  var fabulas = [];
+  var fabScore = 0;
+  for (var i = 0; i < FABULAS.length; i++) {
+    var ans = getValue("fab-" + i).trim();
+    var ev = evaluateFabula(ans, FABULAS[i].keywords);
+    fabScore += ev.score;
+    fabulas.push({
+      title: FABULAS[i].title,
+      answer: ans,
+      score: ev.score,
+      matched: ev.matched
+    });
+  }
+
+  var quizAnswers = [];
+  var quizScore = 0;
+  for (var k = 0; k < QUIZ.length; k++) {
+    var q = QUIZ[k];
+    var selected = -1;
+    var opts = document.getElementsByName("q" + k);
+    for (var m = 0; m < opts.length; m++) {
+      if (opts[m].checked) { selected = parseInt(opts[m].value, 10); break; }
+    }
+    var correct = (selected === q.correct);
+    if (correct) quizScore++;
+    quizAnswers.push({
+      question: q.q,
+      options: q.options,
+      selected: selected,
+      selectedText: selected >= 0 ? q.options[selected] : "(не выбран)",
+      correct: correct,
+      correctText: q.options[q.correct]
+    });
+  }
+
+  var totalScore = fabScore + quizScore;
+  var passed = totalScore >= PASS_SCORE;
+  var timeSpent = TIME_LIMIT - timeLeft;
+
+  var submission = {
+    id: Date.now(),
+    date: new Date().toLocaleString("ru-RU"),
+    code: currentCode,
+    user: currentUser,
+    inspector: currentInspector,
+    fabulas: fabulas,
+    quiz: quizAnswers,
+    fabScore: fabScore,
+    quizScore: quizScore,
+    totalScore: totalScore,
+    passed: passed,
+    timeSpent: timeSpent,
+    timeSpentStr: formatTime(timeSpent),
+    autoSubmitted: auto === true
+  };
+
+  saveSubmission(submission);
+  showResults(submission);
+  el("bottombar").classList.add("hidden");
+}
+
+/* =========================================================
+   RESULTS
+   ========================================================= */
+function showResults(sub) {
+  el("screen-test").classList.add("hidden");
+  el("screen-results").classList.remove("hidden");
+  var cont = el("results-content");
+
+  var html = '<div class="info-bar">';
+  html += '<b>ФИО:</b> ' + esc(sub.user) + '<br>';
+  html += '<b>Код:</b> ' + esc(sub.code) + '<br>';
+  html += '<b>Проверяющий:</b> ' + esc(sub.inspector) + '<br>';
+  html += '<b>Дата:</b> ' + esc(sub.date) + '<br>';
+  html += '<b>Затрачено времени:</b> ' + sub.timeSpentStr + ' из 20 мин';
+  if (sub.autoSubmitted) html += '<br><b style="color:#d29922">⚠ Тест отправлен автоматически по истечении времени</b>';
+  html += '</div>';
+
+  html += '<div class="overall ' + (sub.passed ? "pass" : "fail") + '">';
+  html += (sub.passed ? "✅ ДОПУЩЕН" : "❌ НЕ ДОПУЩЕН");
+  html += '<small>Итоговый балл: ' + sub.totalScore + ' из 40 (проходной — ' + PASS_SCORE + ')</small>';
+  html += '<small>Фабулы: ' + sub.fabScore + ' / 30 · Тест: ' + sub.quizScore + ' / 10</small>';
+  html += '</div>';
+
+  html += '<h2 style="margin-top:24px">Часть I. Фабулы</h2>';
+  for (var i = 0; i < sub.fabulas.length; i++) {
+    var f = sub.fabulas[i];
+    html += '<div class="result-item ' + (f.score >= 5 ? "pass" : "fail") + '">';
+    html += '<div class="title"><span>' + esc(f.title) + '</span>';
+    html += '<span class="verdict ' + (f.score >= 5 ? "pass" : "fail") + '">' + f.score + ' / 10 баллов</span></div>';
+    html += '<div class="answer"><b>Ваш ответ:</b> ' + (esc(f.answer) || '<i>нет ответа</i>') + '</div>';
+    html += '<div class="meta">Совпало ключевых формулировок: ' + f.matched + '</div>';
+    html += '</div>';
+  }
+
+  html += '<h2 style="margin-top:24px">Часть II. Тест</h2>';
+  for (var k = 0; k < sub.quiz.length; k++) {
+    var a = sub.quiz[k];
+    html += '<div class="result-item ' + (a.correct ? "pass" : "fail") + '">';
+    html += '<div class="title"><span>' + (k+1) + '. ' + esc(a.question) + '</span>';
+    html += '<span class="verdict ' + (a.correct ? "pass" : "fail") + '">' + (a.correct ? "✓ Верно" : "✗ Неверно") + '</span></div>';
+    html += '<div class="answer"><b>Ваш ответ:</b> ' + esc(a.selectedText);
+    if (!a.correct) html += '<br><b style="color:#3fb950">Правильный ответ:</b> ' + esc(a.correctText);
+    html += '</div></div>';
+  }
+
+  cont.innerHTML = html;
+}
+
+/* =========================================================
+   BACK
+   ========================================================= */
+function backHome() {
+  stopTimer();
+  el("screen-home").classList.remove("hidden");
+  el("screen-test").classList.add("hidden");
+  el("screen-results").classList.add("hidden");
+  el("screen-admin").classList.add("hidden");
+  el("bottombar").classList.add("hidden");
+  el("access-code").value = "";
+  el("user-name").value = "";
+  el("inspector").value = "";
+  currentCode = null;
+  currentUser = null;
+  currentInspector = null;
+}
+
+function confirmExit() {
+  if (!confirm("Прервать аттестацию? Результаты не будут сохранены, код останется использованным.")) return;
+  stopTimer();
+  backHome();
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+el("init-badge").textContent = "JS: OK ✓";
+console.log("USB test app initialized. Admin password:", ADMIN_PASSWORD);
+console.log("Available codes:", ACCESS_CODES);
+</script>
+</body>
+</html>
